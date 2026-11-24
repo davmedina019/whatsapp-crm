@@ -52,4 +52,9 @@ COPY --from=builder --chown=nextjs:nextjs /app/public ./public
 
 USER nextjs
 EXPOSE 3000
+
+# Same check as docker-compose.yml, so it also works on Easypanel/plain Docker.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD node -e "fetch('http://localhost:3000').then((r)=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"
+
 CMD ["node", "server.js"]
